@@ -1,6 +1,10 @@
 package com.sdacademy.otto.joachim.serviceapp;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -30,6 +34,25 @@ public class MainActivity extends AppCompatActivity {
         @BindView(R.id.icona)
         ImageView icon;
 
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            double temp =intent.getDoubleExtra("TEMPERATURA",0);
+            int pressure1 = intent.getIntExtra("CISNIENIE" , 0);
+            String main1 = intent.getStringExtra("MAIN");
+            Long date1 = intent.getLongExtra("DATA",0);
+
+
+            String city = intent.getStringExtra("CITY");
+            temperature.setText("Temperatura " + temp + " C");
+            pressure.setText("Ciśnienie " + pressure1);
+            date.setText("Data: " + date1);
+            main.setText("Main : " + main1);
+
+
+        }
+    };
+
 
 
 
@@ -44,13 +67,40 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent  = new Intent(MainActivity.this,WeatherIntentService.class);
                     intent.setAction("GET_WEATHER");
+                    intent.putExtra("CITY", "London");
                     startService(intent);
                 }
             });
+            button2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent  = new Intent(MainActivity.this,WeatherIntentService.class);
+                    intent.setAction("GET_WEATHER");// check with log
+                    intent.putExtra("CITY", "Warsaw");
+                    startService(intent);
+                }
+            });
+            button3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent  = new Intent(MainActivity.this,WeatherIntentService.class);
+                    intent.setAction("GET_WEATHER");
+                    intent.putExtra("CITY", "Tokio");
+                    startService(intent);
+                }
+            });
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("WEATHER_RESPONSE");
 
-
+            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);//regegister our broadcastreciver
+            broadcastManager.registerReceiver(broadcastReceiver,filter);
 
         }
 
-
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(this);
+        broadcastManager.unregisterReceiver(broadcastReceiver);
+        super.onDestroy();
+    }
 }
