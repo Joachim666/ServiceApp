@@ -4,6 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+
+
+import android.icu.text.SimpleDateFormat;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView icon;
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onReceive(Context context, Intent intent) {
             double temp =intent.getDoubleExtra("TEMPERATURA",0);
@@ -43,16 +51,20 @@ public class MainActivity extends AppCompatActivity {
             Long date1 = intent.getLongExtra("DATA",0);
 
 
-            String city = intent.getStringExtra("CITY");
+
             temperature.setText("Temperatura " + temp + " C");
             pressure.setText("Ciśnienie " + pressure1);
-            date.setText("Data: " + date1);
+            date.setText("Data: " + convertDate(date1));
             main.setText("Main : " + main1);
 
 
         }
     };
-
+@RequiresApi(api = Build.VERSION_CODES.N)
+private  String convertDate(long date){
+    SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+    return format.format(new Date(date));
+}
 
 
 
