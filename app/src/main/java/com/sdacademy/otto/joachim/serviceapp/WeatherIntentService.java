@@ -44,7 +44,7 @@ public class WeatherIntentService extends IntentService {
         intent.setAction("WEATHER_RESPONSE");
         JSONObject mainJsonObject = jsonObject.optJSONObject("main"); //zeby dobrac sie do maina bo tam jest temp and press
         if (mainJsonObject !=null){
-            intent.putExtra("TEMERATURA",mainJsonObject.optDouble("temp"));
+            intent.putExtra("TEMPERATURA",mainJsonObject.optDouble("temp"));
             intent.putExtra("CISNIENIE",mainJsonObject.optInt("pressure"));
 
         }
@@ -74,7 +74,7 @@ public class WeatherIntentService extends IntentService {
     }
     private  JSONObject sendRequest(String city){
         Request.Builder builder = new Request.Builder();
-        builder.url("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=49b31c92acee9b6e8d8f21d4bf420c6f");
+        builder.url("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=49b31c92acee9b6e8d8f21d4bf420c6f&units=metric");
         builder.get();
 
         Request request = builder.build();
